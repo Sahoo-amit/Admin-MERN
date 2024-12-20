@@ -1,0 +1,21 @@
+const express = require('express')
+const router = express.Router()
+const controllers = require('./controllers')
+const validate = require('./validate/validate')
+const validate_middleware = require('./validate/validate_middleware')
+const jwt_middleware = require('./jwt_middleware')
+const admin_middleware = require('./admin_middleware')
+
+router.route('/register').post(validate_middleware(validate.signupSchema),controllers.register)
+router.route('/login').post(validate_middleware(validate.loginschema),controllers.login)
+router.route('/contact').post(controllers.contact)
+router.route('/user').get(jwt_middleware, controllers.user)
+router.route('/service').get(controllers.service)
+router.route('/admin').get(jwt_middleware, admin_middleware, controllers.admin_user)
+router.route('/admin/delete/:id').delete(jwt_middleware, admin_middleware, controllers.deleteUser)
+router.route('/admin/user/:id').get(jwt_middleware, admin_middleware, controllers.singleUser)
+router.route('/admin/update/:id').patch(jwt_middleware, admin_middleware, controllers.updateUser)
+router.route('/admin_contact').get(jwt_middleware, admin_middleware, controllers.admin_contact)
+router.route('/admin_contact/delete/:id').get(jwt_middleware,admin_middleware,controllers.deleteContact)
+
+module.exports = router
